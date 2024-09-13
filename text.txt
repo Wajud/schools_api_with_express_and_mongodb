@@ -1,0 +1,4 @@
+Schools API with expressjs and mongodb will have endpoints for
+## courses
+## lecturers
+## extracurricular activities
