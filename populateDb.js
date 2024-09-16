@@ -9,7 +9,6 @@ import Lecturers from "./models/lecturersModel.js";
 import ExtraCurriculars from "./models/extrasModels.js";
 
 dotenv.config();
-const MONGODB_URI = process.env.MONGODB_URI;
 
 const writeToDB = async () => {
   try {

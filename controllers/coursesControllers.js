@@ -1,4 +1,3 @@
-// import { find, findAll, update, remove } from "../models/coursesModels.js";
 import Courses from "../models/coursesModels.js";
 
 //get all courses
@@ -13,10 +12,15 @@ export const getCourse = async (req, res, next) => {
   try {
     const courseId = req.params.id;
     const course = await Courses.findById(courseId);
+    if (!course) {
+      const err = new Error("Course not found");
+      err.status = 404;
+      return next(err);
+    }
     res.json(course);
   } catch (error) {
-    const err = new Error(error);
-    err.status = 404;
+    const err = new Error("Server Error");
+    err.status = 500;
     return next(err);
   }
 };
@@ -24,10 +28,25 @@ export const getCourse = async (req, res, next) => {
 //create course Controller
 
 export const createCourse = async (req, res, next) => {
-  const courseSent = req.body;
-  const newCourse = await Courses.create(courseSent);
+  const sentData = req.body;
+  console.log(sentData);
+  if (!sentData.lecturer || !sentData.courseCode || !sentData.courseTitle) {
+    const err = new Error(
+      "Lecturer, coursecode and courseTitle must be specified"
+    );
+    err.status = 404;
+    next(err);
+  }
 
-  res.json(newCourse);
+  try {
+    const newCourse = await Courses.create(sentData);
+
+    res.json(newCourse);
+  } catch (error) {
+    const err = new Error("Server Error");
+    err.status = 500;
+    next(err);
+  }
 };
 
 //Update course handler
@@ -35,14 +54,15 @@ export const createCourse = async (req, res, next) => {
 export const updateCourse = async (req, res, next) => {
   const courseId = req.params.id;
   const sentData = req.body;
+
   try {
     const updatedCourse = await Courses.findByIdAndUpdate(courseId, sentData, {
       new: true,
     });
     res.json(updatedCourse);
   } catch (error) {
-    const err = new Error(error);
-    err.status = 404;
+    const err = new Error("Server Error");
+    err.status = 500;
     next(err);
   }
 };
@@ -55,7 +75,7 @@ export const deleteCourse = async (req, res, next) => {
     await Courses.findByIdAndDelete(courseId);
     res.send("Course successfully deleted");
   } catch (error) {
-    const err = new Error(error);
+    const err = new Error("An error occurred");
     err.status = 404;
     next(err);
   }

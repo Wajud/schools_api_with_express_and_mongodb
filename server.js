@@ -2,7 +2,7 @@ import express from "express";
 import { coursesRouter } from "./routes/courses.js";
 import lecturersRouter from "./routes/lecturers.js";
 import extrasRouter from "./routes/extracurriculars.js";
-import errorHandler from "./error.js";
+import errorHandler from "./errors/error.js";
 import connectDb from "./connectDb.js";
 import dotenv from "dotenv";
 
@@ -10,7 +10,8 @@ dotenv.config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-const PORT = 8000;
+const PORT = process.env.PORT || 5500;
+console.log(PORT);
 const app = express();
 
 //json middleware
